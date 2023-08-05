@@ -39,5 +39,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("com.zaxxer:HikariCP:5.0.1")
-    implementation("org.xerial:sqlite-jdbc:3.34.0")
+    implementation("org.xerial:sqlite-jdbc:3.40.1.0")
+    implementation("io.ktor:ktor-server-status-pages:$ktor_version")
 }

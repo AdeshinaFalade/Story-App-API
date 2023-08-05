@@ -1,11 +1,11 @@
 package com.adeshina.repository
 
 import com.adeshina.security.JwtConfig
-import com.adeshina.security.hash
 import com.adeshina.service.CreateUserParams
 import com.adeshina.service.UserService
 import com.adeshina.utils.BaseResponse
 import io.ktor.http.*
+import javax.naming.AuthenticationException
 
 class UserRepositoryImpl(
     private val userService: UserService
@@ -30,7 +30,8 @@ class UserRepositoryImpl(
         val user = userService.findUserByEmail(email)
             ?: return BaseResponse.ErrorResponse(message = "Invalid username or password", statusCode = HttpStatusCode.Unauthorized)
         if(!userService.verifyPassword(user.id, password)){
-            return BaseResponse.ErrorResponse(message = "Invalid username or password", statusCode = HttpStatusCode.Unauthorized)
+            //return BaseResponse.ErrorResponse(message = "Invalid username or password", statusCode = HttpStatusCode.Unauthorized)
+            throw AuthenticationException("Invalid username or password!")
         }
         val token = JwtConfig.instance.createAccessToken(user.id)
         user.authToken = token

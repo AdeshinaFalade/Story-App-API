@@ -3,7 +3,6 @@ package com.adeshina.security
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import java.time.LocalDateTime
 import java.util.*
 
 class JwtConfig private constructor(secret: String){

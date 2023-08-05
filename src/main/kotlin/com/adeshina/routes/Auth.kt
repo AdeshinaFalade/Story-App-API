@@ -10,7 +10,10 @@ import io.ktor.server.routing.*
 
 fun Application.authRoutes(repository: UserRepository){
 
+
+
     routing {
+
         route("/auth"){
             post("/register") {
                 val params = call.receive<CreateUserParams>()
