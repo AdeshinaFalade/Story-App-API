@@ -3,6 +3,7 @@ package com.adeshina.service
 import com.adeshina.db.DatabaseFactory.dbQuery
 import com.adeshina.db.UserTable
 import com.adeshina.models.User
+import com.adeshina.security.hash
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -15,7 +16,7 @@ class UserServiceImpl : UserService {
             statement = UserTable.insert {
                 it[email] = params.email
                 it[fullName] = params.fullName
-                it[password] = params.password //@Todo encrypt password
+                it[password] = hash(params.password)
                 it[avatar] = params.avatar
             }
         }
@@ -25,7 +26,7 @@ class UserServiceImpl : UserService {
     override suspend fun findUserByEmail(email: String): User? {
         val user = dbQuery {
             UserTable.select{ UserTable.email.eq(email) }
-                .map { rowToUser(it) }.singleOrNull()
+                .map (::rowToUser ).singleOrNull()
         }
         return user
     }
@@ -39,5 +40,12 @@ class UserServiceImpl : UserService {
             email =  row[UserTable.email],
             createdAt = row[UserTable.createdAt].toString(),
         )
+    }
+
+    override suspend fun verifyPassword(id: Int, password: String): Boolean {
+        val userPassword = dbQuery {
+            UserTable.select { UserTable.id.eq(id) }.singleOrNull()?.get(UserTable.password)
+        }
+        return userPassword == hash(password)
     }
 }
